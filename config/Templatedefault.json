@@ -1,0 +1,15 @@
+{         
+    "mqttLeftTopic": "",
+    "mqttRightTopic": "",
+    "mqttBroker": "",
+    "mqttPassword": "",
+    "mqttUser": "",
+    "issuer": "",
+    "audience": "",
+    "serverCert": "/config/serverCert.pem",
+    "algorithm": "RS256",
+    "gateClaim": "gate",
+    "garageClaim": "garage",
+    "ignoreTokenExpiration": true,
+    "ignoreTokenCreation": true
+}
