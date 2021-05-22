@@ -9,12 +9,12 @@ import MessageBus from "./notifications/MessageBus";
 import { ServerRoutes } from "./routes/ServerRoutes";
 import Db from "./db/db";
 import * as mongoose from "mongoose";
-import * as MockMongoose from "mock-mongoose";
 import * as connectMongo from "connect-mongodb-session";
 import { errorHandler } from "./middleware/error";
 import * as fs from "fs";
 const MongoStore = connectMongo(session);
 const debug = Debug("GarageWebApiVNext");
+import { MongoMemoryServer } from "mongodb-memory-server";
 
 export interface IApplication extends express.Application {
     db: Db;
@@ -96,19 +96,26 @@ export class App {
     private mongoSetup = (connectionString: string): void => {
 
         if (false) {
-            const mockMongoose = new MockMongoose.MockMongoose(mongoose);
-            console.log("Using Mocked Mongoose.");
+            const mongoServer = new MongoMemoryServer();
+            mongoServer.getUri().then((mongoUri) => {
+              const mongooseOpts = {
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
+              };
+              mongoose.set("useFindAndModify", false);
+              mongoose.connect(mongoUri, mongooseOpts);
 
-            mockMongoose.prepareStorage().then( () => {
-                mongoose.set("useFindAndModify", false);
-                mongoose.connect(connectionString, {
-                    useNewUrlParser: true,
-                    useCreateIndex: true,
-                    useUnifiedTopology: true,
-                }).
-                catch(error =>
-                    debug(`Unable to connect to mongodb @${connectionString}, error: ${error}`),
-                );
+              mongoose.connection.on("error", (e) => {
+                if (e.message.code === "ETIMEDOUT") {
+                  console.log(e);
+                  mongoose.connect(mongoUri, mongooseOpts);
+                }
+                console.log(e);
+              });
+
+              mongoose.connection.once("open", () => {
+                console.log(`MongoDB successfully connected to ${mongoUri}`);
+              });
             });
         } else {
             // Use the MongoDB drivers upsert method instead of mongooses

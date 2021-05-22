@@ -1,44 +1,33 @@
 import { Request, Response, Application, NextFunction } from "express";
 import * as Debug from "debug";
 import e = require("express");
-import ServerController from "../controllers/ServerController";
 import { compare } from "bcryptjs";
-import { ErrorResponse } from "../utils/errorResponse";
+import { ErrorResponse } from "../utils/ErrorResponse";
 import { asyncHandler } from "../middleware/async";
+import { IRequest } from "../interfaces/IRequest";
+import { serverController } from "controllers/ServerController";
 const debug = Debug("GarageWebApiVNext");
-
-export interface IRequest extends Request {
-    access_token: string;
-    session: any;
-}
 
 export class ServerRoutes {
     private application: any;
 
     public routes(app: Application): void {
         this.application = app;
-        let serverController = new ServerController();
 
         app.get("/alive", async(req: IRequest, res: Response) => {
-            res.send(serverController.getAliveMessage() + ` ${JSON.stringify(req.session)}`);
+            serverController.alive(req, res);
         });
 
         app.post("/login", this.authenticateUser, async(req: IRequest, res: Response, next: NextFunction) => {
-            if (req.body.authenticated) {
-                res.send("OK!");
-            } else {
-                return next(new ErrorResponse("unknown user or invalid password.", 401));
-            }
+            serverController.login(req, res, next);
         });
 
         app.post("/logout", async(req: IRequest, res: Response) => {
-            // tslint:disable-next-line:no-empty
-            req?.session?.destroy((err) => { });
-            res.send("logged out.");
+            serverController.logout(req, res);
         });
     }
 
-    authenticateUser = async(req: IRequest, res: Response, next: NextFunction): Promise<any> => {
+    authenticateUser = asyncHandler(async (req: IRequest, res: Response, next: NextFunction): Promise<any> => {
         let username = req?.body?.username;
         let user = await this.application.db.getUser(username);
         let password = req?.body?.password ? req?.body?.password : "";
@@ -49,5 +38,5 @@ export class ServerRoutes {
             req.body.authenticated = await compare(password, user?.password);
         }
         next();
-    }
+    });
 }

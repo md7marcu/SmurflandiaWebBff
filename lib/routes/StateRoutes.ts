@@ -1,21 +1,19 @@
 import { Request, Response, NextFunction, Application } from "express";
-import { config } from "node-config-ts";
+import { IRequest } from "../interfaces/IRequest";
 import * as Fs from "fs";
 import { VerifyOptions, verify } from "jsonwebtoken";
 import { pki }from "node-forge";
 import * as Debug from "debug";
-import { includes } from "lodash";
 import * as path from "path";
 import MessageBus from "../notifications/MessageBus";
 import e = require("express");
-import StateController from "../controllers/StateController";
-import { ErrorResponse } from "../utils/errorResponse";
+import { ErrorResponse } from "../utils/ErrorResponse";
+import { asyncHandler } from "middleware/async";
+import { config } from "node-config-ts";
+import { garageAuthorized, gateAuthorized, userAuthorized } from "../utils/Authorized";
+import { stateController } from "../controllers/StateController";
 
 const debug = Debug("GarageWebApiVNext");
-
-export interface IRequest extends Request {
-    access_token: string;
-}
 
 export class StateRoutes {
     private AUTH_HEADER = "authorization";
@@ -24,50 +22,12 @@ export class StateRoutes {
 
         // TODO: cleanup => Implement notify
         app.post("/Notify", this.retrieveAccessToken, this.requireAccessToken, async(req: IRequest, res: Response, next: NextFunction) => {
-            debug("Notify endpoint called.");
-
-            if (this.userAuthorized(req)) {
-                let garageState: string = "";
-                let gateState: string = "";
-
-                if (this.garageAuthorized(req)) {
-                    garageState = "{\"Left\":\"open\"}";
-                }
-                if (this.gateAuthorized(req)) {
-                    gateState = "{\"open\"}";
-                }
-
-                // let state = messageBus.notifyGarage(GarageDoorStatus.Moving, GarageDoor.Left);
-                res.send("woohoo");
-            } else {
-                return next(new ErrorResponse("Forbidden", 403));
-            }
-            next();
+            stateController.Notify(req, res, next);
         });
 
-        app.post("/GetStates", this.retrieveAccessToken, this.requireAccessToken, async(req: IRequest, res: Response, next: NextFunction) => {
-            debug("GetStates endpoint called.");
-
-            if (this.userAuthorized(req)) {
-                let controller = new StateController();
-                res.send(controller.getStates());
-            } else {
-                return next(new ErrorResponse("Forbidden", 403));
-            }
-            next();
+        app.post("/GetStates", this.retrieveAccessToken, this.requireAccessToken, async (req: IRequest, res: Response, next: NextFunction) => {
+            stateController.GetStates(req, res, next);
         });
-    }
-
-    private garageAuthorized = (req: IRequest) => {
-        return includes((req.access_token as any).claims, config.settings.garageClaim);
-    }
-
-    private gateAuthorized = (req: IRequest) => {
-        return includes((req.access_token as any).claims, config.settings.gateClaim);
-    }
-
-    private userAuthorized = (req: IRequest) => {
-        return req && req.access_token;
     }
 
     private retrieveAccessToken = (req: IRequest, res: Response, next: NextFunction) => {
