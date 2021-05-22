@@ -2,10 +2,9 @@ import { Request, Response, Application, NextFunction } from "express";
 import * as Debug from "debug";
 import e = require("express");
 import { compare } from "bcryptjs";
-import { ErrorResponse } from "../utils/ErrorResponse";
 import { asyncHandler } from "../middleware/async";
 import { IRequest } from "../interfaces/IRequest";
-import { serverController } from "controllers/ServerController";
+import { serverController } from "../controllers/ServerController";
 const debug = Debug("GarageWebApiVNext");
 
 export class ServerRoutes {

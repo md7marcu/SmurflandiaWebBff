@@ -3,7 +3,7 @@ import * as http from "http";
 import { connect, Client } from "mqtt";
 import { config } from "node-config-ts";
 import Debug from "debug";
-import StateController from "../controllers/StateController";
+import StateService from "../services/StateService";
 import SocketIOEvent from "../constants/SocketIOEvent";
 const debug = Debug("SmurflandiaWebBff:MessageBus:");
 
@@ -13,7 +13,7 @@ export default class MessageBus {
     private io: any;
     private mqttClient: Client;
     private topicList: Array<string> = [config.settings.mqttLeftTopic, config.settings.mqttRightTopic, config.settings.mqttGateTopic];
-    private stateController = new StateController();
+    private stateController = new StateService();
 
     constructor(server: http.Server) {
         this.io = socketio.listen(server);

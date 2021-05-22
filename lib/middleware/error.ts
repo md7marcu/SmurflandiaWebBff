@@ -1,5 +1,5 @@
 import Debug from "debug";
-import { ErrorResponse } from "../utils/errorResponse";
+import { ErrorResponse } from "../utils/ErrorResponse";
 const debug = Debug("SmurflandiaWebBff:Error:");
 
 export const errorHandler = (err, req, res, next) => {

@@ -22,11 +22,11 @@ export class StateRoutes {
 
         // TODO: cleanup => Implement notify
         app.post("/Notify", this.retrieveAccessToken, this.requireAccessToken, async(req: IRequest, res: Response, next: NextFunction) => {
-            stateController.Notify(req, res, next);
+            stateController.notify(req, res, next);
         });
 
         app.post("/GetStates", this.retrieveAccessToken, this.requireAccessToken, async (req: IRequest, res: Response, next: NextFunction) => {
-            stateController.GetStates(req, res, next);
+            stateController.getStates(req, res, next);
         });
     }
 
