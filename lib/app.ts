@@ -15,6 +15,7 @@ import * as fs from "fs";
 const MongoStore = connectMongo(session);
 const debug = Debug("GarageWebApiVNext");
 import { MongoMemoryServer } from "mongodb-memory-server";
+import * as cors from "cors";
 
 export interface IApplication extends express.Application {
     db: Db;
@@ -50,6 +51,7 @@ export class App {
         this.app.db = new Db();
         this.server = http.createServer(this.app);
         this.config();
+        this.corsConfig();
         this.messageBus = new MessageBus(this.server);
 
         this.stateRoutes.routes(this.app, this.messageBus);
@@ -91,6 +93,21 @@ export class App {
         this.app.use(session(sess));
 
         // this.app.use(express.static("public"));
+    }
+
+    private corsConfig = () => {
+        const whitelist = config.settings.corsWhitelist;
+        const corsOptions = {
+          origin: function (origin, callback) {
+            // origin is undefined server - server
+            if (whitelist.indexOf(origin) !== -1 || !origin) {
+              callback(undefined, true);
+            } else {
+              callback(new Error("Cors error."));
+            }
+          },
+        };
+        this.app.use(cors(corsOptions));
     }
 
     private mongoSetup = (connectionString: string): void => {

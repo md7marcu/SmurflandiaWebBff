@@ -8,12 +8,12 @@ const debug = Debug("SmurflandiaWebBff:StateController:");
 export class ServerController {
 
     public async alive(req: IRequest, res: Response) {
-        res.send(serverService.getAliveMessage() + ` ${JSON.stringify(req.session)}`);
+        res.send(serverService.getAliveMessage());
     }
 
     public async login(req: IRequest, res: Response, next: NextFunction) {
         if (req.body.authenticated) {
-            res.send("OK!");
+            res.status(200).send(req.session);
         } else {
             return next(new ErrorResponse("unknown user or invalid password.", 401));
         }
