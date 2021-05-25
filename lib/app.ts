@@ -16,6 +16,7 @@ const MongoStore = connectMongo(session);
 const debug = Debug("GarageWebApiVNext");
 import { MongoMemoryServer } from "mongodb-memory-server";
 import * as cors from "cors";
+import * as passport from "passport";
 
 export interface IApplication extends express.Application {
     db: Db;
@@ -52,6 +53,11 @@ export class App {
         this.server = http.createServer(this.app);
         this.config();
         this.corsConfig();
+
+        // Passport middleware
+        this.app.use(passport.initialize());
+        this.app.use(passport.session());
+
         this.messageBus = new MessageBus(this.server);
 
         this.stateRoutes.routes(this.app, this.messageBus);
@@ -65,9 +71,6 @@ export class App {
     }
 
     private config(): void {
-        // support application/json type post data
-        // TODO: Verify it works with exress.json
-        // this.app.use(bodyParser.json());
         this.app.use(express.json());
 
         // support application/x-www-form-urlencoded post data
@@ -91,8 +94,6 @@ export class App {
             sess.cookie.secure = true;
         }
         this.app.use(session(sess));
-
-        // this.app.use(express.static("public"));
     }
 
     private corsConfig = () => {
@@ -107,6 +108,11 @@ export class App {
             }
           },
         };
+        // Need to allow credentials through CORS
+        this.app.use(function(req, res, next){
+            res.setHeader("Access-Control-Allow-Credentials", "true");    
+            next();
+        });
         this.app.use(cors(corsOptions));
     }
 
