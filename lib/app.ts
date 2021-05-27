@@ -4,9 +4,11 @@ import * as bodyParser from "body-parser";
 import * as http from "http";
 import { config } from "node-config-ts";
 import Debug from "debug";
-import { StateRoutes } from "./routes/StateRoutes";
+import { stateRoutes } from "./routes/StateRoutes";
 import MessageBus from "./notifications/MessageBus";
-import { ServerRoutes } from "./routes/ServerRoutes";
+import { serverRoutes } from "./routes/ServerRoutes";
+import { garageRoutes } from "./routes/GarageRoutes";
+import { gateRoutes } from "./routes/GateRoutes";
 import Db from "./db/db";
 import * as mongoose from "mongoose";
 import * as connectMongo from "connect-mongodb-session";
@@ -26,8 +28,6 @@ export class App {
     public server: http.Server;
     public db: Db;
     private app: IApplication;
-    private stateRoutes: StateRoutes = new StateRoutes();
-    private serverRoutes: ServerRoutes = new ServerRoutes();
     private messageBus: MessageBus;
     private mongoStore: any;
     private mongoUserUrl: string = "" + process.env.MONGODB_URL + process.env.MONGODB_USER_DATABASE;
@@ -60,8 +60,10 @@ export class App {
 
         this.messageBus = new MessageBus(this.server);
 
-        this.stateRoutes.routes(this.app, this.messageBus);
-        this.serverRoutes.routes(this.app);
+        stateRoutes.routes(this.app, this.messageBus);
+        serverRoutes.routes(this.app);
+        garageRoutes.routes(this.app);
+        gateRoutes.routes(this.app);
         this.app.use(errorHandler);
 
         if (config.settings.useMongo) {

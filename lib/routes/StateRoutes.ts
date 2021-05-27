@@ -100,3 +100,4 @@ export class StateRoutes {
         return verifyOptions;
     }
 }
+export const stateRoutes = new StateRoutes();

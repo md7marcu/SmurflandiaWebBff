@@ -25,8 +25,9 @@ export const errorHandler = (err, req, res, next) => {
         const message: string = Object.values(error.errors).map(val => (val as any).message).join(",");
         error = new ErrorResponse(message, 400);
     }
-    res.status(error.statusCode || 500).json({
+
+    res.status(error.statusCode || error?.response?.status || 500).json({
         success: false,
-        error: error.message || "Internal Server Error.",
+        error: error?.message || "Internal Server Error.",
     });
 };

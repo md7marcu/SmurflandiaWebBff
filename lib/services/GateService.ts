@@ -1,51 +1,56 @@
 import { config } from "node-config-ts";
 import axios from "axios";
 import Debug from "debug";
+import api from "../utils/GateApi";
 const debug = Debug("SmurflandiaWebBff:GateController:");
 
 export default class GateService {
     readonly requestConfig = {
         headers: {
             // tslint:disable-next-line:max-line-length
-            "Authorization": "Bearer " + "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhdXRob3JpemUudWx0cmFrb21waXMuY29tIiwiYXVkIjoiYXBpLnVsdHJha29tcGlzLmNvbSIsInN1YiI6ImFAYS5zZSIsImV4cCI6MTYyMTY5NjQ0NiwiaWF0IjoxNjIxNjkyODE2LCJzY29wZSI6Im9wZW5pZCIsImVtYWlsIjoiYUBhLnNlIiwiY2xhaW1zIjpbImdhdGUiLCJnYXJhZ2UiXX0.OCXh6HWoE89rOOZ28j2RbDkemH8CLRM2j5xSrv7MDSTxB37u8OKsRMVErRQVMW1tyvJARzgfHvTZd39tIbMdvy0RpEYP2CM5z9OF-GTHSJtzDrbArf4oeZ8Uf9d3cq4lnpfyYoF7Z8ANeIVY5QzqKZ1vnvprukCRVwKJbabpuvNB-6TuPpr30d1ZWlHRdtDVN8iRCM22d9Jtbd-NmIwmVjXMIlgpy0aAniFcXhaZJFFhSxgka2LKxq3r2Ij_nOuXgLQrhklNQRKy_dwUM6S6IrKIE5KKb2LpZSuyBGP7pimgUwL5TuknFsVI06uM2Gu-d5Gk9RmFv-vr6WkkfoaSwQ",
+            "Authorization": "Bearer " + "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhdXRob3JpemUudWx0cmFrb21waXMuY29tIiwiYXVkIjoiYXBpLnVsdHJha29tcGlzLmNvbSIsInN1YiI6ImFAYS5zZSIsImV4cCI6MTYyMjE2MzM4NSwiaWF0IjoxNjIyMTU5NzU1LCJzY29wZSI6Im9wZW5pZCIsImVtYWlsIjoiYUBhLnNlIiwiY2xhaW1zIjpbImdhdGUiLCJnYXJhZ2UiXX0.JXEZdoVuINt1JIvBxotRoabtGMFByTCD5pGTaDPOt4Zwxwx24EBoI9gDLRsdAE678lGM04QLVbLW7Q9XyTRwZqZGVUdJyt8OCSSsvmun69M_QkDUPhSJqxIB8CRZ_NSE4l6fdbdJTll_Fr3cDI_8STu6ZDvIc3f-YH0U6sVvNySKotv8tMk00WW-CGg1azGJLv-dcNxMdSZScO1sCIVP_3fBbOOYcZ3sL4H0ZtlAFOAScKqFx9NIJ3EPZ3PrGxd-vZMXoGNALYiAB3S1_J1IZdWxga0GCcedf6GC2LaktLTYA2UTZjgVSrI5jioLNJMbTgHWbhG7xf9b5UKKb2C-Bg",
         },
     };
 
+    public async getAliveMessage(): Promise<string> {
+        return await this.get(config.settings.gateAlive);
+     }
+
+     public async getProtectedAliveMessage(): Promise<string> {
+        return await this.get(config.settings.gateProtectedAlive);
+     }
+
     public async getGateState(): Promise<string> {
-        try {
-            let response = await axios.get(
-                config.settings.gateBase + config.settings.gateState,
-                this.requestConfig);
-
-            return response?.data?.message;
-        } catch (error) {
-            debug(`Caught exception while getting gate state: ${error}`);
-
-            return error;
-        }
+       return await this.get(config.settings.gateState);
     }
 
+    //TODO: Open gate is not implemented on api
     public async openGate(): Promise<Array<string>> {
-        return await this.post(config.settings.garageBase + config.settings.gateOpen);
+        return await this.post(config.settings.gateMove);
     }
 
+    //TODO: Open gate is not implemented on api
     public async closeGate(): Promise<Array<string>> {
-        return await this.post(config.settings.garageBase + config.settings.gateClose);
+        return await this.post(config.settings.gateMove);
     }
 
-    public async moveGate(): Promise<Array<string>> {
-        return await this.post(config.settings.garageBase + config.settings.gateMove);
+    private async get(uri: string): Promise<any> {
+    try {
+        let response = await api.get(uri, this.requestConfig);
+
+        return response?.data;
+    } catch (error) {
+        throw error;
     }
+}
 
     private async post(uri: string): Promise<any> {
         try {
-            let response = await axios.post(uri, this.requestConfig);
+            let response = await api.post(uri, {}, this.requestConfig);
 
-            return response;
+            return response?.data;
         } catch (error) {
-            debug(`Caught exception while operating gate at: ${uri}`);
-
-            return undefined;
+            throw error;
         }
     }
 }
