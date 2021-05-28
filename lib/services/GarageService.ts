@@ -9,7 +9,7 @@ export default class GarageService {
     readonly requestConfig = {
         headers: {
             // tslint:disable-next-line:max-line-length
-            "Authorization": "Bearer " + "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhdXRob3JpemUudWx0cmFrb21waXMuY29tIiwiYXVkIjoiYXBpLnVsdHJha29tcGlzLmNvbSIsInN1YiI6ImFAYS5zZSIsImV4cCI6MTYyMjA4OTg1OSwiaWF0IjoxNjIyMDg2MjI5LCJzY29wZSI6Im9wZW5pZCIsImVtYWlsIjoiYUBhLnNlIiwiY2xhaW1zIjpbImdhdGUiLCJnYXJhZ2UiXX0.ddxvnjqXjTDyfb0MB9kW-L-aZsK_AJP64Sst9CTKtRrrHbz8WX5lEiQ7G8bjdQUMJiPVPcCjlAfAQFhurPuwRG-9r5ubTUigWeOxHA8Act-mOQVLjlV-aNUsjLGrsl_hwVRxeCjn-X2xLtbQ9b9vftblCJFFcwZ0ryoibMH6JUhYjxurT4k94TyRI7LHUhdMipVAFhEfrqT1A7sYEZm_GP4QmDVEf6vvvN0DMnvZcypDpZbxYwIFhFSPKjqHDUhnEzi3iEmgWpTK77FTOVa9vDStH4gqEWKAJu7NqT0KHSkIqldBAv7XfI-0Lm6qWz5CCmYzUIayUMam9de5pY1TIA",
+            "Authorization": "Bearer " + "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhdXRob3JpemUudWx0cmFrb21waXMuY29tIiwiYXVkIjoiYXBpLnVsdHJha29tcGlzLmNvbSIsInN1YiI6ImFAYS5zZSIsImV4cCI6MTYyMjE3NTMzNCwiaWF0IjoxNjIyMTcxNzA0LCJzY29wZSI6Im9wZW5pZCIsImVtYWlsIjoiYUBhLnNlIiwiY2xhaW1zIjpbImdhdGUiLCJnYXJhZ2UiXX0.i-aM-yIMAS5r65NvzpoBo9iBZTCDfDpfn4-7HB9cfaB_dV3GyCuFaWSHp-iMxPUjuquoAKR9EHPHW1Fvix6itnWWFq_Do8VkN6UgOwXavBLq-B65ruaRWrNNkBX1YGHlT7-cnMuMh1LAQtoq3wIKfsNCq31sWwCq6F47gxnKUMtkRv5Z2fS1lzryuEAjJd6zy7kD65gu8TRZ9KKySyDAEJ3ovwSlVQgAJ69wcFCxsBpRy1u36_4oScqFduNi8htAwpXniIakdkd615aJ2FV-a6s6oCFbNpAD1846bG8EknpYwhTRmk6lU7Ln88Zm3ORyXCVWjCH_YylC2W5ZABpG7w",
         },
     };
 
@@ -31,6 +31,14 @@ export default class GarageService {
 
     public async openLeftDoor(): Promise<any> {
         return await this.openGarage(GarageDoor.Left);
+    }
+
+    public async moveRightDoor(): Promise<any> {
+        return await this.moveGarage(GarageDoor.Right);
+    }
+    
+    public async moveLeftDoor(): Promise<any> {
+        return await this.moveGarage(GarageDoor.Left);
     }
 
     public async getGarageState(): Promise<any> {
@@ -55,6 +63,10 @@ export default class GarageService {
         }
     }
 
+    // TODO: close door - will just trigger it to move - cleanup/state
+    private async moveGarage(which: string): Promise<any> {
+        return await this.post(this.getCloseDoor(which));
+    }
     private async openGarage(which: string): Promise<any> {
         return await this.post(this.getOpenDoor(which));
     }

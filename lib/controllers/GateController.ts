@@ -21,5 +21,10 @@ export class GateController {
     public async closeGate(req: IRequest, res: Response, next: NextFunction): Promise<any> {
         return await gateService.closeGate();
     }
+//TODO: protect
+        public async moveGate(req: IRequest, res: Response, next: NextFunction): Promise<any> {
+            return await gateService.moveGate();
+        }
+
 }
 export const gateController = new GateController();

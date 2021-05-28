@@ -22,6 +22,11 @@ export class GateRoutes {
             res.send(message);
         }));
 
+        app.post("/moveGate", asyncHandler(async (req: IRequest, res: Response, next: NextFunction) => {
+            let message = await gateController.moveGate(req, res, next);
+            res.send(message);
+        }));
+
         app.post("/openGate", asyncHandler(async (req: IRequest, res: Response, next: NextFunction) => {
             let message = await gateController.openGate(req, res, next);
             res.send(message);

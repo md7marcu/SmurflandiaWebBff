@@ -35,6 +35,16 @@ export class GarageRoutes {
             let message = await garageController.closeLeftDoor(req, res, next);            
             res.send(message);
         }));
+
+        app.post("/moveRightDoor", asyncHandler(async (req: IRequest, res: Response, next: NextFunction) => {
+            let message = await garageController.moveRightDoor(req, res, next);
+            res.send(message);
+        }));
+
+        app.post("/moveLeftDoor", asyncHandler(async (req: IRequest, res: Response, next: NextFunction) => {
+            let message = await garageController.moveLeftDoor(req, res, next);
+            res.send(message);
+        }));
     }
 
     isAuthenticated = asyncHandler ((req: IRequest, res: Response, next: NextFunction) => {

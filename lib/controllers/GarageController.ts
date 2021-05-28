@@ -29,5 +29,13 @@ export class GarageController {
     public async closeLeftDoor(req: IRequest, res: Response, next: NextFunction): Promise<any> {
         return await garageService.closeLeftDoor();
     }
+    //TODO: protect
+    public async moveRightDoor(req: IRequest, res: Response, next: NextFunction): Promise<any> {
+        return await garageService.moveRightDoor();
+    }
+    //TODO: protect
+    public async moveLeftDoor(req: IRequest, res: Response, next: NextFunction): Promise<any> {
+        return await garageService.moveLeftDoor();
+    }
 }
 export const garageController = new GarageController();
