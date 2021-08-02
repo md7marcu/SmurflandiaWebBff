@@ -1,5 +1,4 @@
 import { config } from "node-config-ts";
-import axios from "axios";
 import Debug from "debug";
 import api from "../utils/GateApi";
 const debug = Debug("SmurflandiaWebBff:GateController:");

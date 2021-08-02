@@ -278,11 +278,10 @@ __pycache__/
 # End of https://www.gitignore.io/api/aspnetcore
 /yarn.lock
 /Certificates
-*.pem
+serverCert.pem
 .nyc_output/
 coverage/
 dist/
-
 node_modules
 dist
 *~
