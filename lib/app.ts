@@ -32,8 +32,8 @@ export class App {
     private mongoStore: any;
     private mongoUserUrl: string = "" + process.env.MONGODB_URL + process.env.MONGODB_USER_DATABASE;
     private httpsOptions = {
-       // key: fs.readFileSync("./config/bffKey.pem"),
-       // cert: fs.readFileSync("./config/bffCert.pem"),
+       key: fs.readFileSync("./config/bffKey.pem"),
+       cert: fs.readFileSync("./config/bffCert.pem"),
     };
 
     constructor() {
@@ -112,7 +112,7 @@ export class App {
         };
         // Need to allow credentials through CORS
         this.app.use(function(req, res, next){
-            res.setHeader("Access-Control-Allow-Credentials", "true");    
+            res.set("Access-Control-Allow-Credentials", "true");    
             next();
         });
         this.app.use(cors(corsOptions));
