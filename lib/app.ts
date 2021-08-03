@@ -36,6 +36,7 @@ export class App {
        cert: fs.readFileSync("./config/bffCert.pem"),
     };
 
+    // dumheter
     constructor() {
         debug("Constructing app.");
         this.mongoStore = new MongoStore({
