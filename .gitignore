@@ -293,3 +293,4 @@ coverage/
 .nyc_output/
 config/.env
 lib/controllers/example.ts
+bajsbarn
