@@ -1,0 +1,45 @@
+{  
+    "settings": {    
+        "sessionsCollection": "sessions",   
+        "mqttLeftTopic": "/house/garage/door/left/state",
+        "mqttRightTopic": "/house/garage/door/right/state",
+        "mqttGateTopic": "/house/gate/state",
+        "mqttBroker": "",
+        "mqttPassword": "",
+        "mqttUser": "",
+        "issuer": "authorize.ultrakompis.com",
+        "audience": "api.ultrakompis.com",
+        "serverCert": "/config/serverCert.pem",
+        "algorithm": "RS256",
+        "gateClaim": "gate",
+        "garageClaim": "garage",
+        "ignoreTokenExpiration": true,
+        "ignoreTokenCreation": true,
+        "gateBase": "",
+        "gateState": "V2/GetState",
+        "gateOpen": "V2/OpenGate",
+        "gateClose": "V2/CloseGate",
+        "gateMove": "V2/MoveGate",
+        "garageBase": "",
+        "garageState": "GetGarageDoorStatuses",
+        "garageLeftOpen": "OpenLeftGarageDoor",
+        "garageLeftClose": "CloseLeftGarageDoor",
+        "garageLeftMove": "SwitchLeftDoor",
+        "garageRightOpen": "OpenRightGarageDoor",
+        "garageRightClose": "CloseRightGarageDoor",
+        "garageRightMove": "SwitchRightDoor",
+        "garageAlive": "Alive",
+        "gateAlive": "V2",
+        "gateProtectedAlive": "V2/ProtectedAlive",
+        "useMongo": true,
+        "corsWhitelist": ["http://localhost:15572"],
+        "users": [
+            {
+                "userId": "12345678",
+                "password": "verysecret#",
+                "email": "user2@email.com",
+                "name": "Email Juarez"
+            }
+        ]
+    }
+}

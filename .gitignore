@@ -285,7 +285,6 @@ dist/
 node_modules
 dist
 *~
-default.json
 launch.json
 .env
 dist/
