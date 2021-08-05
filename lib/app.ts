@@ -1,7 +1,7 @@
 import * as express from "express";
 import * as session from "express-session";
 import * as bodyParser from "body-parser";
-import * as http from "http";
+import * as https from "https";
 import { config } from "node-config-ts";
 import Debug from "debug";
 import { stateRoutes } from "./routes/StateRoutes";
@@ -13,28 +13,29 @@ import Db from "./db/db";
 import * as mongoose from "mongoose";
 import * as connectMongo from "connect-mongodb-session";
 import { errorHandler } from "./middleware/error";
-import * as fs from "fs";
 const MongoStore = connectMongo(session);
 const debug = Debug("GarageWebApiVNext");
 import { MongoMemoryServer } from "mongodb-memory-server";
 import * as cors from "cors";
 import * as passport from "passport";
+import * as fs from "fs";
 
 export interface IApplication extends express.Application {
     db: Db;
 }
 
+const httpsOptions = {
+    key: fs.readFileSync("./" + config.settings.appKey),
+    cert: fs.readFileSync("./" + config.settings.appCert),
+ };
+
 export class App {
-    public server: http.Server;
+    public server: https.Server;
     public db: Db;
     private app: IApplication;
     private messageBus: MessageBus;
     private mongoStore: any;
     private mongoUserUrl: string = "" + process.env.MONGODB_URL + process.env.MONGODB_USER_DATABASE;
-    private httpsOptions = {
-       key: fs.readFileSync("./config/bffKey.pem"),
-       cert: fs.readFileSync("./config/bffCert.pem"),
-    };
 
     // dumheter
     constructor() {
@@ -51,7 +52,7 @@ export class App {
 
         (this.app as any) = express();
         this.app.db = new Db();
-        this.server = http.createServer(this.app);
+        this.server = https.createServer(httpsOptions, this.app);
         this.config();
         this.corsConfig();
 

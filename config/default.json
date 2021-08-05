@@ -10,6 +10,8 @@
         "issuer": "authorize.ultrakompis.com",
         "audience": "api.ultrakompis.com",
         "serverCert": "/config/serverCert.pem",
+        "appKey": "/config/tests/dev_bff.key",
+        "appCert": "/config/tests/dev_bffcert.pem",
         "algorithm": "RS256",
         "gateClaim": "gate",
         "garageClaim": "garage",
