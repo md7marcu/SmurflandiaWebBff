@@ -15,6 +15,8 @@ declare module "node-config-ts" {
     issuer: string
     audience: string
     serverCert: string
+    appKey: string
+    appCert: string
     algorithm: string
     gateClaim: string
     garageClaim: string
