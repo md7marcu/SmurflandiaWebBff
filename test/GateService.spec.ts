@@ -12,15 +12,15 @@ describe("Gate Service", () => {
         Debug.disable();
     });
 
-    beforeEach(()=> {
+    beforeEach(() => {
         nock(config.settings.gateBase)
-        .get("/"+ config.settings.gateState)
+        .get("/" + config.settings.gateState)
         .once()
         .reply(200, gateStateResponse);
     });
 
     it("Should return Closed on getGateState", async () => {
-        let response = await gateService.getGateState();
+        let response = await gateService.getGateState("");
 
         expect(response).to.be.equal(gateStateResponse);
     });

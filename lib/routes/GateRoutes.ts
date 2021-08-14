@@ -10,6 +10,13 @@ import { ErrorResponse } from "../utils/ErrorResponse";
 
 export class GateRoutes {
 
+    isAuthenticated = asyncHandler ((req: IRequest, res: Response, next: NextFunction) => {
+        if (req.isAuthenticated()) {
+            return next();
+        }
+        next(new ErrorResponse("Unauthorized.", 401));
+    });
+
     public routes(app: Application): void {
 
         app.get("/gateAlive", asyncHandler(async (req: IRequest, res: Response, next: NextFunction) => {
@@ -37,12 +44,5 @@ export class GateRoutes {
             res.send(message);
         }));
     }
-
-    isAuthenticated = asyncHandler ((req: IRequest, res: Response, next: NextFunction) => {
-        if (req.isAuthenticated()) {
-            return next();
-        }
-        next(new ErrorResponse("Unauthorized.", 401));
-    });
 }
 export const gateRoutes = new GateRoutes();

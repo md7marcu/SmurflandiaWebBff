@@ -5,11 +5,11 @@ import { garageService } from "./GarageService";
 
 export default class StateService {
 
-    public async getStates(): Promise<string[]> {
+    public async getStates(token: string): Promise<string[]> {
         let states;
 
-        try { 
-            let gateState = await gateService.getGateState();
+        try {
+            let gateState = await gateService.getGateState(token);
             let garageState = await garageService.getGarageState();
             garageState.unshift(gateState);
             states = garageState;

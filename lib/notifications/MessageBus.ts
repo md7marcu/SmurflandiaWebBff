@@ -45,11 +45,13 @@ export default class MessageBus {
     private getState = async () => {
         debug("State request received");
 
-        return await this.stateController.getStates();
+        // TODO: Get States as the client or connected user ?
+        return await this.stateController.getStates("");
     }
 
     private onConnect = async (socket) => {
-        socket.emit("states", await this.stateController.getStates());
+        // TODO: Get States as the client or connected user ?
+        socket.emit("states", await this.stateController.getStates(""));
     }
 
     private onDisconnect() {

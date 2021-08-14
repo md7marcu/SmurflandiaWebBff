@@ -40,6 +40,7 @@ export class App {
     // dumheter
     constructor() {
         debug("Constructing app.");
+
         this.mongoStore = new MongoStore({
             uri: "" + process.env.MONGODB_URL + process.env.MONGODB_SMURF_DATABASE,
             collection: process.env.SESSIONS_COLLECTION,
@@ -52,6 +53,7 @@ export class App {
 
         (this.app as any) = express();
         this.app.db = new Db();
+        this.setCACerts();
         this.server = https.createServer(httpsOptions, this.app);
         this.config();
         this.corsConfig();
@@ -72,6 +74,13 @@ export class App {
             debug("Using MongoDb.");
             this.mongoSetup(this.mongoUserUrl);
         }
+    }
+
+    private setCACerts(): void{
+        let cas = [
+            fs.readFileSync("./" + config.settings.caCert),
+            fs.readFileSync("./" + config.settings.interimCert)];
+        https.globalAgent.options.ca = cas;
     }
 
     private config(): void {
@@ -113,8 +122,8 @@ export class App {
           },
         };
         // Need to allow credentials through CORS
-        this.app.use(function(req, res, next){
-            res.set("Access-Control-Allow-Credentials", "true");    
+        this.app.use(function(req, res, next) {
+            res.set("Access-Control-Allow-Credentials", "true");
             next();
         });
         this.app.use(cors(corsOptions));

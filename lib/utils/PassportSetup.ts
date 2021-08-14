@@ -15,7 +15,8 @@ passport.deserializeUser((id, done) => {
 });
 
 passport.use("local",
-    new LocalStrategy({ usernameField: "username" }, (email: any, password: string, done: (arg0: null, arg1: boolean | IUserDocument | null, arg2: { message: any; } | undefined) => void) => {
+    new LocalStrategy({ usernameField: "username" },
+    (email: any, password: string, done: (arg0: null, arg1: boolean | IUserDocument | null, arg2: { message: any; } | undefined) => void) => {
 
         UserModel.findOne({ email: email })
             .then(user => {
@@ -24,8 +25,10 @@ passport.use("local",
                     if (err) throw err;
 
                     if (isMatch) {
+                        // tslint:disable-next-line:no-null-keyword
                         return done(null, user, undefined);
                     } else {
+                        // tslint:disable-next-line:no-null-keyword
                         return done(null, false, { message: "Wrong password" });
                     }
                 });

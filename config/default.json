@@ -12,6 +12,8 @@
         "serverCert": "/config/serverCert.pem",
         "appKey": "/config/tests/dev_bff.key",
         "appCert": "/config/tests/dev_bffcert.pem",
+        "caCert": "/config/tests/ca.pem",
+        "interimCert": "/config/tests/interim.pem",
         "algorithm": "RS256",
         "gateClaim": "gate",
         "garageClaim": "garage",

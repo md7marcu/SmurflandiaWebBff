@@ -8,13 +8,13 @@ import { stateService } from "../services/StateService";
 import { gateService } from "../services/GateService";
 import { garageService } from "../services/GarageService";
 
-
+// TODO: Refactor authorization header (will be replaced by token exchange)
 export class StateController {
 
     public async getStates(req: IRequest, res: Response, next: NextFunction) {
 
         if (userAuthorized(req)) {
-            res.send(stateService.getStates());
+            res.send(stateService.getStates(req?.headers?.authorization ?? ""));
         } else {
             return next(new ErrorResponse("Forbidden", 403));
         }
@@ -22,7 +22,7 @@ export class StateController {
     }
 
     public async notify(req: IRequest, res: Response, next: NextFunction) {
-        
+
         if (userAuthorized(req)) {
             let garageState: string[];
             let gateState: string;
@@ -31,7 +31,7 @@ export class StateController {
                 garageState = await garageService.getGarageState();
             }
             if (gateAuthorized(req)) {
-                gateState = await gateService.getGateState();
+                gateState = await gateService.getGateState(req?.headers?.authorization ?? "");
             }
 
             // let state = messageBus.notifyGarage(GarageDoorStatus.Moving, GarageDoor.Left);
