@@ -62,7 +62,7 @@ export class App {
         this.app.use(passport.initialize());
         this.app.use(passport.session());
 
-        this.messageBus = new MessageBus(this.server);
+       this.messageBus = new MessageBus(this.server);
 
         stateRoutes.routes(this.app, this.messageBus);
         serverRoutes.routes(this.app);

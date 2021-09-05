@@ -12,34 +12,39 @@ export default class GateService {
 
      public async getProtectedAliveMessage(token: string): Promise<string> {
         this.requestConfig.headers.Authorization = token;
+
         return await this.get(config.settings.gateProtectedAlive);
      }
 
     public async getGateState(token: string): Promise<string> {
         this.requestConfig.headers.Authorization = token;
+
        return await this.get(config.settings.gateState);
     }
 
     // TODO: Open gate is not implemented on api
     public async openGate(token: string): Promise<Array<string>> {
         this.requestConfig.headers.Authorization = token;
+
         return await this.post(config.settings.gateMove);
     }
 
     // TODO: Close gate is not implemented on api
     public async closeGate(token: string): Promise<Array<string>> {
         this.requestConfig.headers.Authorization = token;
+
         return await this.post(config.settings.gateMove);
     }
 
     public async moveGate(token: string): Promise<Array<string>> {
         this.requestConfig.headers.Authorization = token;
+
         return await this.post(config.settings.gateMove);
     }
 
     private async get(uri: string): Promise<any> {
         try {
-            let response = await api.get(uri, this.requestConfig);
+            let response = await api.get(config.settings.gateBase + uri, this.requestConfig);
 
             return response?.data;
         } catch (error) {
@@ -49,7 +54,7 @@ export default class GateService {
 
     private async post(uri: string): Promise<any> {
         try {
-            let response = await api.post(uri, {}, this.requestConfig);
+            let response = await api.post(config.settings.gateBase + uri, {}, this.requestConfig);
 
             return response?.data;
         } catch (error) {

@@ -18,13 +18,13 @@ export default class GarageService {
     }
 
     public async openRightDoor(): Promise<any> {
-        return await this.openGarage(GarageDoor.Right);        
+        return await this.openGarage(GarageDoor.Right);
     }
 
     public async closeRightDoor(): Promise<any> {
         return await this.closeGarage(GarageDoor.Right);
     }
-    
+
     public async closeLeftDoor(): Promise<any> {
         return await this.closeGarage(GarageDoor.Left);
     }
@@ -36,7 +36,7 @@ export default class GarageService {
     public async moveRightDoor(): Promise<any> {
         return await this.moveGarage(GarageDoor.Right);
     }
-    
+
     public async moveLeftDoor(): Promise<any> {
         return await this.moveGarage(GarageDoor.Left);
     }

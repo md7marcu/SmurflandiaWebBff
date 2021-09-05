@@ -43,6 +43,15 @@ declare module "node-config-ts" {
     useMongo: boolean
     corsWhitelist: string[]
     users: User[]
+    idp: string
+    accessTokenEndpoint: string
+    tokenExchangeSubjectType: string
+    tokenExchangeGrant: string
+    client: Client
+  }
+  interface Client {
+    client_id: string
+    client_secret: string
   }
   interface User {
     userId: string

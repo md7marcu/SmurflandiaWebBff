@@ -23,8 +23,7 @@ export class GateController {
     }
 
     public async moveGate(req: IRequest, res: Response, next: NextFunction): Promise<any> {
-        return await gateService.moveGate(req?.headers?.authorization ?? "");
+       return await gateService.moveGate(req?.exchanged_token ?? "");
     }
-
 }
 export const gateController = new GateController();

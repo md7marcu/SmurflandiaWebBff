@@ -7,6 +7,10 @@ import { gateController } from "../controllers/GateController";
 const debug = Debug("GateRoutes");
 import  "../utils/PassportSetup";
 import { ErrorResponse } from "../utils/ErrorResponse";
+import { isThrowStatement } from "typescript";
+import { config} from "node-config-ts";
+import api from "../utils/IdpApi";
+import { CLIENT_RENEG_WINDOW } from "tls";
 
 export class GateRoutes {
 
@@ -29,7 +33,7 @@ export class GateRoutes {
             res.send(message);
         }));
 
-        app.post("/moveGate", asyncHandler(async (req: IRequest, res: Response, next: NextFunction) => {
+        app.post("/moveGate", this.exchangeToken, asyncHandler(async (req: IRequest, res: Response, next: NextFunction) => {
             let message = await gateController.moveGate(req, res, next);
             res.send(message);
         }));
@@ -43,6 +47,30 @@ export class GateRoutes {
             let message = await gateController.closeGate(req, res, next);
             res.send(message);
         }));
+    }
+
+    private exchangeToken = async(req: IRequest, res: Response, next: NextFunction) =>  {
+        try {
+            let response = await api.post(config.settings.accessTokenEndpoint,
+                {
+                    grant_type: config.settings.tokenExchangeGrant,
+                    subject_token_type: config.settings.tokenExchangeSubjectType,
+                    subject_token: req?.headers?.authorization?.replace("Bearer ", ""),
+                },
+                {
+                    auth: {
+                        username: config.settings.client.client_id,
+                        password: config.settings.client.client_secret,
+                    },
+                },
+            );
+
+            req.exchanged_token = response?.data.access_token;
+            next();
+        } catch (error) {
+            debug(`Failed to exchange token ${error}`);
+            next(error?.message);
+        }
     }
 }
 export const gateRoutes = new GateRoutes();

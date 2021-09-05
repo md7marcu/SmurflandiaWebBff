@@ -44,6 +44,14 @@
                 "email": "user2@email.com",
                 "name": "Email Juarez"
             }
-        ]
+        ],
+        "idp": "https://localhost:4002/",
+        "accessTokenEndpoint": "token",
+        "tokenExchangeSubjectType": "urn:ietf:params:oauth:token-type:access_token",
+        "tokenExchangeGrant": "urn:ietf:params:oauth:grant-type:token-exchange",
+        "client": { 
+            "client_id": "smurflandiawebbff",
+            "client_secret": ""
+        }
     }
 }

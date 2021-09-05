@@ -22,8 +22,8 @@ export class ServerController {
                 next(new ErrorResponse("unknown user or invalid password.", 401));
                 return;
             }
-            req.logIn(user, function(err) {
-                if (err) {
+            req.logIn(user, function(loginErr) {
+                if (loginErr) {
                     next(new ErrorResponse("unknown user or invalid password.", 401));
                     return;
                 }

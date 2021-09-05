@@ -12,10 +12,10 @@ describe("Garage Service", () => {
         Debug.disable();
     });
 
-    beforeEach(()=> {
+    beforeEach(() => {
         nock(config.settings.garageBase)
-        .get("/"+ config.settings.garageState)   
-        .once()     
+        .get("/" + config.settings.garageState)
+        .once()
         .reply(200, garageStateResponse);
     });
 
