@@ -65,9 +65,9 @@ export class App {
 
             throw new Error(error);
         });
-        // Passport middleware
         this.app.use(passport.initialize());
         this.app.use(passport.session());
+        // TODO: reenable messagebus at some point
         // this.messageBus = new MessageBus(this.server);
 
         stateRoutes.routes(this.app, this.messageBus);

@@ -4,7 +4,6 @@ import Debug from "debug";
 import { gateService } from "../services/GateService";
 const debug = Debug("SmurflandiaWebBff:GateController:");
 
-// TODO: Refactor authorization header (will be replaced by token exchange)
 export class GateController {
     public async alive(req: IRequest, res: Response, next: NextFunction) {
         return await gateService.getAliveMessage();
