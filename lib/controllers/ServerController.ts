@@ -11,14 +11,20 @@ import { exchangeToken } from "../utils/ExchangeToken";
 export class ServerController {
 
     public async userInfo(req: IRequest, res: Response, next: NextFunction) {
-        let userInfo = await serverService.getUserInfo(req?.user?.tokenset?.access_token);
-        let accessToken = await exchangeToken(req?.user?.tokenset?.id_token);
-        let decodedToken = decode(accessToken);
-        let user = {
-            ...userInfo,
-            claims: [...decodedToken?.scope],
-        };
-        res.send(user);
+        try {
+            let userInfo = await serverService.getUserInfo(req?.user?.tokenset?.access_token);
+            let accessToken = await exchangeToken(req?.user?.tokenset?.id_token);
+            let decodedToken = decode(accessToken);
+            let user = {
+                ...userInfo,
+                claims: [...decodedToken?.scope],
+            };
+            res.send(user);
+        } catch (error) {
+            next(error);
+
+            return;
+        }
     }
 
     public async alive(req: IRequest, res: Response) {

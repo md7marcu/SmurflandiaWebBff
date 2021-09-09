@@ -17,20 +17,26 @@ export const exchangeTokenMiddleware = async(req: IRequest, res: Response, next:
 };
 
 export const exchangeToken = async(idToken: string) => {
-    let response = await api.post(config.settings.idp + config.settings.accessTokenEndpoint,
-        {
-            grant_type: config.settings.tokenExchangeGrant,
-            subject_token_type: config.settings.tokenExchangeSubjectType,
-            subject_token: idToken,
-        },
-        {
-            auth: {
-                username: config.settings.client.client_id,
-                password: config.settings.client.client_secret,
+    try {
+        let response = await api.post(config.settings.idp + config.settings.accessTokenEndpoint,
+            {
+                grant_type: config.settings.tokenExchangeGrant,
+                subject_token_type: config.settings.tokenExchangeSubjectType,
+                subject_token: idToken,
             },
-        },
-    );
-    return response?.data?.access_token;
+            {
+                auth: {
+                    username: config.settings.client.client_id,
+                    password: config.settings.client.client_secret,
+                },
+            },
+        );
+            return response?.data?.access_token;
+        } catch (error) {
+            debug(`Failed to exchange token (post) ${error}`);
+
+            throw error;
+        }
 };
 
 export default exchangeTokenMiddleware;
