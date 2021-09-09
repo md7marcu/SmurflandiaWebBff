@@ -5,7 +5,7 @@ env.config();
 const PORT = 5005; // process.env.SERVICE_PORT;
 
 const srv = server.listen(PORT, () => {
-    console.log("Express server listening on portt " + PORT); 
+    console.log("Express server listening on portt " + PORT);
 });
 
 // Handle unhandled promise rejections

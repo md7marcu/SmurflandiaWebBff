@@ -15,5 +15,5 @@ if (process.env.NODE_ENV === "Development" || process.env.NODE_ENV === "Windows"
 }
 
 export default axios.create({
-  baseURL: config.settings.accessTokenEndpoint,
+  baseURL: config.settings.idp,
 });

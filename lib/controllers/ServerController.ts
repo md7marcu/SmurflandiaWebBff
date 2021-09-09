@@ -5,8 +5,21 @@ import { ErrorResponse } from "../utils/ErrorResponse";
 import { serverService } from "../services/ServerService";
 const debug = Debug("SmurflandiaWebBff:StateController:");
 import * as passport from "passport";
+import { decode } from "jsonwebtoken";
+import { exchangeToken } from "../utils/ExchangeToken";
 
 export class ServerController {
+
+    public async userInfo(req: IRequest, res: Response, next: NextFunction) {
+        let userInfo = await serverService.getUserInfo(req?.user?.tokenset?.access_token);
+        let accessToken = await exchangeToken(req?.user?.tokenset?.id_token);
+        let decodedToken = decode(accessToken);
+        let user = {
+            ...userInfo,
+            claims: [...decodedToken?.scope],
+        };
+        res.send(user);
+    }
 
     public async alive(req: IRequest, res: Response) {
         res.send(serverService.getAliveMessage());
@@ -30,7 +43,7 @@ export class ServerController {
                 return res.status(200).send(req.session.cookie);
             });
         })(req, res, next);
-    };
+    }
 
     public async logout(req: IRequest, res: Response) {
         // tslint:disable-next-line:no-empty

@@ -45,6 +45,7 @@ declare module "node-config-ts" {
     users: User[]
     idp: string
     accessTokenEndpoint: string
+    userinfoEndpoint: string
     tokenExchangeSubjectType: string
     tokenExchangeGrant: string
     client: Client

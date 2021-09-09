@@ -3,5 +3,5 @@ import { config } from "node-config-ts";
 
 // Garage
 export default axios.create({
-  baseURL: config.settings.garageBase
+  baseURL: config.settings.garageBase,
 });

@@ -45,8 +45,9 @@
                 "name": "Email Juarez"
             }
         ],
-        "idp": "https://localhost:4002/",
+        "idp": "https://localhost:3002/",
         "accessTokenEndpoint": "token",
+        "userinfoEndpoint": "userinfo",
         "tokenExchangeSubjectType": "urn:ietf:params:oauth:token-type:access_token",
         "tokenExchangeGrant": "urn:ietf:params:oauth:grant-type:token-exchange",
         "client": { 

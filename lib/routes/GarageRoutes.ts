@@ -5,10 +5,16 @@ import { asyncHandler } from "../middleware/async";
 import { IRequest } from "../interfaces/IRequest";
 import { garageController } from "../controllers/GarageController";
 const debug = Debug("GarageWebApiVNext");
-import  "../utils/PassportSetup";
 import { ErrorResponse } from "../utils/ErrorResponse";
 
 export class GarageRoutes {
+
+    isAuthenticated = asyncHandler ((req: IRequest, res: Response, next: NextFunction) => {
+        if (req.isAuthenticated()) {
+            return next();
+        }
+        next(new ErrorResponse("Unauthorized.", 401));
+    });
 
     public routes(app: Application): void {
 
@@ -32,7 +38,7 @@ export class GarageRoutes {
         }));
 
         app.post("/closeLeftDoor", asyncHandler(async (req: IRequest, res: Response, next: NextFunction) => {
-            let message = await garageController.closeLeftDoor(req, res, next);            
+            let message = await garageController.closeLeftDoor(req, res, next);
             res.send(message);
         }));
 
@@ -46,12 +52,5 @@ export class GarageRoutes {
             res.send(message);
         }));
     }
-
-    isAuthenticated = asyncHandler ((req: IRequest, res: Response, next: NextFunction) => {
-        if (req.isAuthenticated()) {
-            return next();
-        }
-        next(new ErrorResponse("Unauthorized.", 401));
-    });
 }
 export const garageRoutes = new GarageRoutes();
