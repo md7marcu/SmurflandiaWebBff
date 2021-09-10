@@ -19,11 +19,12 @@ const debug = Debug("GarageWebApiVNext");
 import { MongoMemoryServer } from "mongodb-memory-server";
 import * as passport from "passport";
 import * as fs from "fs";
-import { Issuer, Strategy, Client, custom } from "openid-client";
+import { Issuer, Strategy, Client } from "openid-client";
 import corsConfig from "./utils/CorsConfig";
 
 export interface IApplication extends express.Application {
     db: Db;
+    client: Client;
 }
 
 const httpsOptions = {
@@ -34,7 +35,6 @@ const httpsOptions = {
 export class App {
     public server: https.Server;
     public db: Db;
-    public client: Client;
     private app: IApplication;
     private messageBus: MessageBus;
     private mongoStore: any;
@@ -59,34 +59,35 @@ export class App {
         this.server = https.createServer(httpsOptions, this.app);
         this.config();
         corsConfig(this.app);
-        this.oauth(this.client)
+        this.oauth().then(() => {
+            this.app.use(passport.initialize());
+            this.app.use(passport.session());
+            // TODO: reenable messagebus at some point
+            // this.messageBus = new MessageBus(this.server);
+
+            stateRoutes.routes(this.app, this.messageBus);
+            serverRoutes.routes(this.app);
+            garageRoutes.routes(this.app);
+            gateRoutes.routes(this.app);
+            oidcRoutes.routes(this.app);
+            this.app.use(errorHandler);
+
+            if (config.settings.useMongo) {
+                debug("Using MongoDb.");
+                this.mongoSetup(this.mongoUserUrl);
+            }
+        })
         .catch((error) => {
             debug(`could not setup passport middleware ${error}`);
 
             throw new Error(error);
         });
-        this.app.use(passport.initialize());
-        this.app.use(passport.session());
-        // TODO: reenable messagebus at some point
-        // this.messageBus = new MessageBus(this.server);
-
-        stateRoutes.routes(this.app, this.messageBus);
-        serverRoutes.routes(this.app);
-        garageRoutes.routes(this.app);
-        gateRoutes.routes(this.app);
-        oidcRoutes.routes(this.app);
-        this.app.use(errorHandler);
-
-        if (config.settings.useMongo) {
-            debug("Using MongoDb.");
-            this.mongoSetup(this.mongoUserUrl);
-        }
     }
 
-    private async oauth(client: Client) {
+    private async oauth() {
         let issuer = await Issuer.discover(config.settings.idp);
 
-        client = new issuer.Client({
+        let client = new issuer.Client({
             client_id: config.settings.client.client_id,
             client_secret: config.settings.client.client_secret,
             redirect_uris: ["https://localhost:5005/auth/callback"],
@@ -103,14 +104,16 @@ export class App {
             done(undefined, user);
         });
 
+        this.app.client = client;
+
         passport.use(
             "oidc",
             new Strategy(
-              { client },
+            { client } ,
               (tokenset, userinfo, done) => {
-                console.log("Retrieved tokenset & userinfo");
-                // Attach tokens to the stored userinfo.
+                debug("Retrieved tokenset & userinfo");
                 userinfo.tokenset = tokenset;
+
                 return done(undefined, userinfo);
               },
             ),

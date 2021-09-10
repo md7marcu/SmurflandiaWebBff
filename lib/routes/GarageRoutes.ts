@@ -1,53 +1,58 @@
-import { Response, Application, NextFunction } from "express";
-import * as Debug from "debug";
+import { Response, NextFunction } from "express";
 import e = require("express");
 import { asyncHandler } from "../middleware/async";
 import { IRequest } from "../interfaces/IRequest";
+import { isAuthenticated } from "../utils/IsAuthenticated";
 import { garageController } from "../controllers/GarageController";
+import { exchangeTokenMiddleware } from "../utils/ExchangeToken";
+import { IApplication } from "app";
+import { Client } from "openid-client";
+import * as Debug from "debug";
 const debug = Debug("GarageWebApiVNext");
-import { ErrorResponse } from "../utils/ErrorResponse";
 
 export class GarageRoutes {
+    private client: Client;
 
-    isAuthenticated = asyncHandler ((req: IRequest, res: Response, next: NextFunction) => {
-        if (req.isAuthenticated()) {
-            return next();
-        }
-        next(new ErrorResponse("Unauthorized.", 401));
-    });
+    public routes(app: IApplication): void {
+        this.client = app.client;
 
-    public routes(app: Application): void {
-
-        app.get("/garageAlive", asyncHandler((req: IRequest, res: Response, next: NextFunction) => {
+        app.get("/garageAlive", isAuthenticated(this.client), exchangeTokenMiddleware(this.client),
+        asyncHandler((req: IRequest, res: Response, next: NextFunction) => {
             garageController.alive(req, res, next);
         }));
 
-        app.post("/openRightDoor", asyncHandler(async (req: IRequest, res: Response, next: NextFunction) => {
+        app.post("/openRightDoor", isAuthenticated(this.client), exchangeTokenMiddleware(this.client),
+        asyncHandler(async (req: IRequest, res: Response, next: NextFunction) => {
             let message = await garageController.openRightDoor(req, res, next);
             res.send(message);
         }));
 
-        app.post("/closeRightDoor", asyncHandler(async (req: IRequest, res: Response, next: NextFunction) => {
+        app.post("/closeRightDoor", isAuthenticated(this.client), exchangeTokenMiddleware(this.client),
+        asyncHandler(async (req: IRequest, res: Response, next: NextFunction) => {
             let message = await garageController.closeRightDoor(req, res, next);
             res.send(message);
         }));
 
-        app.post("/openLeftDoor", asyncHandler(async (req: IRequest, res: Response, next: NextFunction) => {
+        app.post("/openLeftDoor", isAuthenticated(this.client), exchangeTokenMiddleware(this.client),
+        asyncHandler(async (req: IRequest, res: Response, next: NextFunction) => {
             let message = await garageController.openLeftDoor(req, res, next);
             res.send(message);
         }));
 
-        app.post("/closeLeftDoor", asyncHandler(async (req: IRequest, res: Response, next: NextFunction) => {
+        app.post("/closeLeftDoor", isAuthenticated(this.client), exchangeTokenMiddleware(this.client),
+        asyncHandler(async (req: IRequest, res: Response, next: NextFunction) => {
             let message = await garageController.closeLeftDoor(req, res, next);
             res.send(message);
         }));
 
-        app.post("/moveRightDoor", asyncHandler(async (req: IRequest, res: Response, next: NextFunction) => {
+        app.post("/moveRightDoor", isAuthenticated(this.client), exchangeTokenMiddleware(this.client),
+        asyncHandler(async (req: IRequest, res: Response, next: NextFunction) => {
             let message = await garageController.moveRightDoor(req, res, next);
             res.send(message);
         }));
 
-        app.post("/moveLeftDoor", asyncHandler(async (req: IRequest, res: Response, next: NextFunction) => {
+        app.post("/moveLeftDoor", isAuthenticated(this.client), exchangeTokenMiddleware(this.client),
+        asyncHandler(async (req: IRequest, res: Response, next: NextFunction) => {
             let message = await garageController.moveLeftDoor(req, res, next);
             res.send(message);
         }));

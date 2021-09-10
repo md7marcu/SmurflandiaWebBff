@@ -17,6 +17,7 @@ export default class ServerService {
             throw error;
         }
     }
+
     getAliveMessage(): string {
         return "Alive!";
     }

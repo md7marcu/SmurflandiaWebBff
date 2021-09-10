@@ -8,9 +8,7 @@ import * as path from "path";
 import MessageBus from "../notifications/MessageBus";
 import e = require("express");
 import { ErrorResponse } from "../utils/ErrorResponse";
-import { asyncHandler } from "middleware/async";
 import { config } from "node-config-ts";
-import { garageAuthorized, gateAuthorized, userAuthorized } from "../utils/Authorized";
 import { stateController } from "../controllers/StateController";
 
 const debug = Debug("GarageWebApiVNext");

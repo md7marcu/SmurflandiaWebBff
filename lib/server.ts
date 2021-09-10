@@ -10,6 +10,6 @@ const srv = server.listen(PORT, () => {
 
 // Handle unhandled promise rejections
 process.on("unhandledRejection", (err, promise) => {
-    console.log(`Error: ${(err as any)?.message}`);
+    console.error(`Error: ${(err as any)?.message}`);
     srv.close(() => process.exit(1));
 });
