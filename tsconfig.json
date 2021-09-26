@@ -10,7 +10,8 @@
         "allowJs": true,
         "strictNullChecks": true,
         "noImplicitAny": false,
-        "types": ["node"]
+        "types": ["node"],
+        "skipLibCheck": true
     },
     "include": [
         "./lib/**/*.ts",
